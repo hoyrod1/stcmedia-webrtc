@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <title>WebRTC Chat Room</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="main.js" type="module"></script>
   </head>
   <body>
     <div id="landing_page_container">
@@ -14,7 +16,7 @@
       </p>
       <br />
       <h4>Getting started</h4>
-      <ul>
+      <ol>
         <li>Type a channel name and click <strong>Create</strong></li>
         <li>Get your colleague to open this page in another tab</li>
         <li>
@@ -22,12 +24,16 @@
           <strong>Join</strong>
         </li>
         <li>Start chatting!</li>
-      </ul>
+      </ol>
       <div id="enter_room_wrapper">
-        <input type="text" id="input_room_channel_name" />
-        <button id="create_room_button">button</button>
+        <input
+          type="text"
+          id="input_room_channel_name"
+          placeholder="Enter channel name"
+        />
+        <button id="create_room_button">create</button>
         <button id="join_button">button</button>
-        <button id="info_modal_button">button</button>
+        <button id="info_modal_button">?</button>
       </div>
     </div>
 

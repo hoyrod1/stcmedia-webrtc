@@ -1,0 +1,76 @@
+console.log("==================== Insanity Check For uiUtils.js ====================");
+import * as initialState from "./state.js";
+// selecting DOM elements
+const user_session_id_element = document.getElementById("session_id_display");
+const infoModalButton = document.getElementById("info_modal_button");
+const infoModalContainer = document.getElementById("info_modal_content_container");
+const closeModalButton = document.getElementById("close");
+const inputRoomNameElement = document.getElementById("input_room_channel_name");
+const joinRoomButton = document.getElementById("join_button");
+const createRoomButton = document.getElementById("create_room_button");
+const roomNameHeadingTag = document.getElementById("room_name_heading_tag");
+const landingPage = document.getElementById("landing_page_container");
+const roomInterface = document.getElementById("room_interface");
+const messagesContainer = document.getElementById("messages");
+const messageInputField = document.getElementById("message_input_field");
+const messageInputContainer = document.getElementById("message_input");
+const sendMessageButton = document.getElementById("send_message_button");
+const destroyRoomButton = document.getElementById("destroy_button");
+const exitButton = document.getElementById("exit_button");
+const consoleDisplay = document.getElementById("console_display");
+
+// learning purposes
+const offerorButtonsContainer = document.getElementById("offeror_process_buttons");
+const offerorCreatePcButton = document.getElementById("create_pc");
+const offerorAddDataTypeButton = document.getElementById("add_data_type");
+const offerorCreateOfferButton = document.getElementById("create_offer");
+const offerorUpdateLocalDescriptionButton = document.getElementById(
+  "update_local_description"
+);
+const offerorSendOfferButton = document.getElementById("send_offer");
+const offerorSetRemoteDescriptionButton = document.getElementById(
+  "set_remote_description"
+);
+const offerorIceButton = document.getElementById("ice_offeror");
+
+const offereeButtonsContainer = document.getElementById("offeree_process_buttons");
+const offereeCreatePcButton = document.getElementById("offeree_create_pc");
+const offereeAddDataTypeButton = document.getElementById("offeree_add_data_type");
+const offereeUpdateRemoteDescriptionButton = document.getElementById(
+  "offeree_update_remote_description"
+);
+const offereeCreateAnswerButton = document.getElementById("offeree_create_answer");
+const offereeUpdateLocalDescriptionButton = document.getElementById(
+  "offeree_update_local_description"
+);
+const offereeSendAnswerButton = document.getElementById("offeree_send_answer");
+const offereeIceButton = document.getElementById("ice_offeree");
+
+// Initialize UI events as soon as the user enters page
+export function initializeUI(userId) {
+  user_session_id_element.innerHTML = `Your session id is: ${userId}`;
+  initialState.setUserId(userId);
+  // Set up modal functionality
+  setUpModalEvent();
+}
+// This "setUpModalEvent()" function runs the "openModal()" and "closeModal()" function
+function setUpModalEvent() {
+  infoModalButton.onclick = openModal;
+  closeModalButton.onclick = closeModal;
+  // This event closes the model whenever someone clicks anywhere outside the modal
+  window.onclick = function (e) {
+    if (e.target === infoModalContainer) {
+      closeModal();
+    }
+  };
+}
+// Logic for opening a modal in the "setUpModalEvent()" function
+function openModal() {
+  infoModalContent.classList.add("show");
+  infoModalContent.classList.remove("hide");
+}
+// Logic for closing a modal in the "setUpModalEvent()" function
+function closeModal() {
+  infoModalContent.classList.add("hide");
+  infoModalContent.classList.remove("show");
+}
