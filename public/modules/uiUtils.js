@@ -66,11 +66,11 @@ function setUpModalEvent() {
 }
 // Logic for opening a modal in the "setUpModalEvent()" function
 function openModal() {
-  infoModalContent.classList.add("show");
-  infoModalContent.classList.remove("hide");
+  infoModalContainer.classList.add("show");
+  infoModalContainer.classList.remove("hide");
 }
 // Logic for closing a modal in the "setUpModalEvent()" function
 function closeModal() {
-  infoModalContent.classList.add("hide");
-  infoModalContent.classList.remove("show");
+  infoModalContainer.classList.add("hide");
+  infoModalContainer.classList.remove("show");
 }

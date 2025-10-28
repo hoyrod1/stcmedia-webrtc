@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "expess": "^0.0.1-security",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "ws": "^8.18.3"
+  },
+  "name": "stcmedia-webrtc",
+  "version": "1.0.0",
+  "description": "webrtc app",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyrod1/stcmedia-webrtc.git"
+  },
+  "author": "Rodney St. cloud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoyrod1/stcmedia-webrtc/issues"
+  },
+  "homepage": "https://github.com/hoyrod1/stcmedia-webrtc#readme"
+}
