@@ -74,3 +74,25 @@ function closeModal() {
   infoModalContainer.classList.add("hide");
   infoModalContainer.classList.remove("show");
 }
+// Logic to display our custom logger
+export function logToCustomConsole(
+  message,
+  color = "#ffffff",
+  highLight = false,
+  highLightColor = "#ffff83"
+) {
+  const messageElementDiv = document.createElement("div");
+  messageElementDiv.classList.add("console-message");
+  messageElementDiv.textContent = message;
+  messageElementDiv.style.color = color;
+  if (highLight) {
+    messageElementDiv.style.backgroundColor = highLightColor;
+    messageElementDiv.style.fontWeight = "bold";
+    messageElementDiv.style.padding = "5px";
+    messageElementDiv.style.borderRadius = "3px";
+    messageElementDiv.style.transition = "background-color 0.5s ease";
+  }
+  // Append the "messageElementDiv" div to the "consoleDisplay" div
+  consoleDisplay.appendChild(messageElementDiv);
+  consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
+}
