@@ -2,23 +2,34 @@ console.log("==================== Insanity Check For uiUtils.js ================
 import * as initialState from "./state.js";
 // selecting DOM elements
 const user_session_id_element = document.getElementById("session_id_display");
-const infoModalButton = document.getElementById("info_modal_button");
 const infoModalContainer = document.getElementById("info_modal_content_container");
-const closeModalButton = document.getElementById("close");
 const inputRoomNameElement = document.getElementById("input_room_channel_name");
-const joinRoomButton = document.getElementById("join_button");
-const createRoomButton = document.getElementById("create_room_button");
 const roomNameHeadingTag = document.getElementById("room_name_heading_tag");
 const landingPage = document.getElementById("landing_page_container");
 const roomInterface = document.getElementById("room_interface");
 const messagesContainer = document.getElementById("messages");
 const messageInputField = document.getElementById("message_input_field");
 const messageInputContainer = document.getElementById("message_input");
+const consoleDisplay = document.getElementById("console_display");
+//=============================== All the page Buttons ===============================//
+const infoModalButton = document.getElementById("info_modal_button");
+const closeModalButton = document.getElementById("close");
+const joinRoomButton = document.getElementById("join_button");
+const createRoomButton = document.getElementById("create_room_button");
 const sendMessageButton = document.getElementById("send_message_button");
 const destroyRoomButton = document.getElementById("destroy_button");
 const exitButton = document.getElementById("exit_button");
-const consoleDisplay = document.getElementById("console_display");
+//====================================================================================//
 
+//====================================================================================//
+// Exporting all the DOM elements needed in other files
+export const DOM = {
+  createRoomButton,
+  inputRoomNameElement,
+};
+//====================================================================================//
+
+//====================================================================================//
 // learning purposes
 const offerorButtonsContainer = document.getElementById("offeror_process_buttons");
 const offerorCreatePcButton = document.getElementById("create_pc");

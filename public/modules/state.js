@@ -22,3 +22,7 @@ export const setUserId = (userId) => {
 export const setWsConnection = (wsConnection) => {
   setState({ userWebSocketConnection: wsConnection });
 };
+// Define the getter for a "state{}" object
+export const getState = () => {
+  return state;
+};
