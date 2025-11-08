@@ -1,6 +1,7 @@
-import { response } from "express";
+// import { response } from "express";
 import * as uiUtils from "./uiUtils.js";
 import * as constants from "./constants.js";
+import * as state from "./state.js";
 
 // Send AJAX request to create a new room using the fetch API
 export function createRoom(roomName, userId) {
@@ -11,12 +12,29 @@ export function createRoom(roomName, userId) {
     },
     body: JSON.stringify({ roomName, userId }),
   })
-    .then((response) => response.JSON())
-    .then((resObj) => {})
+    .then((response) => response.json())
+    .then((resObj) => {
+      // console.log(resObj);
+      // console.log(constants.type);
+      // Logic for fetch success
+      if (resObj.data.type === constants.type.ROOM_CHECK.RESPONSE_SUCCESS) {
+        state.setRoomName(roomName);
+        uiUtils.logToCustomConsole("Your room was created!", constants.myColors.green);
+        uiUtils.logToCustomConsole(
+          "Waiting for other peer visitors....",
+          constants.myColors.orange
+        );
+        uiUtils.creatorToProceedToRoom();
+      }
+      // Logic for fetch failure
+      if (resObj.data.type === constants.type.ROOM_CHECK.RESPONSE_FAILURE) {
+        uiUtils.logToCustomConsole(resObj.data.message, constants.myColors.red);
+      }
+    })
     .catch((error) => {
       console.log(`An error ocurred trying to create a room: ${error}`);
       uiUtils.logToCustomConsole(
-        `There was a error trying tot create a room: ${error}`,
+        `There was a error trying to create a room: ${error}`,
         constants.myColors.red
       );
     });

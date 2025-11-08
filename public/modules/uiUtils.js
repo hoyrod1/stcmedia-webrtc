@@ -1,11 +1,11 @@
 console.log("==================== Insanity Check For uiUtils.js ====================");
-import * as initialState from "./state.js";
-// selecting DOM elements
+import * as state from "./state.js";
+//============================= selecting DOM elements =============================//
 const user_session_id_element = document.getElementById("session_id_display");
 const infoModalContainer = document.getElementById("info_modal_content_container");
 const inputRoomNameElement = document.getElementById("input_room_channel_name");
 const roomNameHeadingTag = document.getElementById("room_name_heading_tag");
-const landingPage = document.getElementById("landing_page_container");
+const LandingPageContainer = document.getElementById("landing_page_container");
 const roomInterface = document.getElementById("room_interface");
 const messagesContainer = document.getElementById("messages");
 const messageInputField = document.getElementById("message_input_field");
@@ -19,17 +19,6 @@ const createRoomButton = document.getElementById("create_room_button");
 const sendMessageButton = document.getElementById("send_message_button");
 const destroyRoomButton = document.getElementById("destroy_button");
 const exitButton = document.getElementById("exit_button");
-//====================================================================================//
-
-//====================================================================================//
-// Exporting all the DOM elements needed in other files
-export const DOM = {
-  createRoomButton,
-  inputRoomNameElement,
-};
-//====================================================================================//
-
-//====================================================================================//
 // learning purposes
 const offerorButtonsContainer = document.getElementById("offeror_process_buttons");
 const offerorCreatePcButton = document.getElementById("create_pc");
@@ -56,14 +45,28 @@ const offereeUpdateLocalDescriptionButton = document.getElementById(
 );
 const offereeSendAnswerButton = document.getElementById("offeree_send_answer");
 const offereeIceButton = document.getElementById("ice_offeree");
+//====================================================================================//
 
+//=============== Exporting all the DOM elements needed in other files ===============//
+export const DOM = {
+  createRoomButton,
+  inputRoomNameElement,
+};
+//====================================================================================//
+
+//================================= ALL UI FUNCTIONS =================================//
+//=================================== initializeUI ===================================//
 // Initialize UI events as soon as the user enters page
 export function initializeUI(userId) {
   user_session_id_element.innerHTML = `Your session id is: ${userId}`;
-  initialState.setUserId(userId);
+  state.setUserId(userId);
   // Set up modal functionality
   setUpModalEvent();
 }
+//====================================================================================//
+
+//================================= setUpModalEvent ==================================//
+// Initialize UI events as soon as the user enters page
 // This "setUpModalEvent()" function runs the "openModal()" and "closeModal()" function
 function setUpModalEvent() {
   infoModalButton.onclick = openModal;
@@ -75,16 +78,34 @@ function setUpModalEvent() {
     }
   };
 }
+//====================================================================================//
+
+//==================================== openModal =====================================//
 // Logic for opening a modal in the "setUpModalEvent()" function
 function openModal() {
   infoModalContainer.classList.add("show");
   infoModalContainer.classList.remove("hide");
 }
+//====================================================================================//
+
+//==================================== closeModal ====================================//
 // Logic for closing a modal in the "setUpModalEvent()" function
 function closeModal() {
   infoModalContainer.classList.add("hide");
   infoModalContainer.classList.remove("show");
 }
+//====================================================================================//
+
+//============================== creatorToProceedToRoom ==============================//
+export function creatorToProceedToRoom() {
+  LandingPageContainer.style.display = "none"; // This hides the landing page
+  exitButton.classList.add("hide");
+  roomInterface.classList.remove("hidden"); // The shows the room interface
+  roomNameHeadingTag.textContent = `You are in the room ${state.getState().roomName}`;
+}
+//====================================================================================//
+
+//================================ logToCustomConsole ================================//
 // Logic to display our custom logger
 export function logToCustomConsole(
   message,
@@ -107,3 +128,4 @@ export function logToCustomConsole(
   consoleDisplay.appendChild(messageElementDiv);
   consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
 }
+//====================================================================================//

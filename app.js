@@ -2,6 +2,7 @@
 import http from "http"; // Native module
 import express from "express";
 import { WebSocketServer } from "ws";
+import * as constants from "./constants.js";
 // Define a port for live and testing environments
 const PORT = process.env.PORT || 8080;
 // initialize the expess aplication
@@ -19,11 +20,62 @@ const connections = [
 //======================================================================================//
 
 //======================================================================================//
+// Define state for our rooms
+const rooms = [
+  // Will contain objects containing {roomName, peer1, peer2}
+];
+//======================================================================================//
+
+//======================================================================================//
 // Serve static html file
 app.get("/", (req, res) => {
   res.sendFile(process.cwd() + "/public/index.html");
 });
-//======================================================================================//
+//  Room creation using the POST request
+app.post("/create-room", (req, res) => {
+  // Parse the body of the incoming request
+  let body = "";
+  // "Data"
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+  // "End"
+  req.on("end", () => {
+    // extract the variables from our body
+    const { roomName, userId } = JSON.parse(body);
+    // Check if room already exist
+    const existingRoom = rooms.find((room) => {
+      room.roomName === roomName;
+    });
+    // Check if "existingRoom" has a been created already
+    if (existingRoom) {
+      // If a room has already been created send a failure message back to the client
+      const failureMessage = {
+        data: {
+          type: constants.type.ROOM_CHECK.RESPONSE_FAILURE,
+          message: "That room has already been created, try another name or join",
+        },
+      };
+      res.status(400).json(failureMessage);
+    } else {
+      // The room does not exist so we have to add it to the rooms array
+      rooms.push({
+        roomName,
+        peer1: userId,
+        peer1: null,
+      });
+      // Send a success message to the client
+      const successMessage = {
+        data: {
+          type: constants.type.ROOM_CHECK.RESPONSE_SUCCESS,
+          message: "The room has successfully been created",
+        },
+      };
+      res.status(200).json(successMessage);
+    }
+  });
+});
+//============================= THE END OF CREATING A ROOM =============================//
 
 //======================================================================================//
 // Serve static html file

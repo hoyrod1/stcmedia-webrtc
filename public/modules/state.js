@@ -4,6 +4,7 @@ console.log("======= (state.js) file is to keep all states related to our user =
 let state = {
   userId: null,
   userWebSocketConnection: null,
+  roomName: null,
 };
 // The generic "setState()" setter function is for our state object above
 // This is used below in the "setUserId()" function
@@ -14,13 +15,17 @@ const setState = (newState) => {
     ...newState,
   };
 };
-// set the userId
+// set the "state" object "userId" property with the new value
 export const setUserId = (userId) => {
   setState({ userId });
 };
-// set the ws object state for the user
+// set the "state" object "userWebSocketConnection" property for the user
 export const setWsConnection = (wsConnection) => {
   setState({ userWebSocketConnection: wsConnection });
+};
+// set the "state" object "roomName" property with the new value
+export const setRoomName = (roomName) => {
+  setState({ roomName });
 };
 // Define the getter for a "state{}" object
 export const getState = () => {
