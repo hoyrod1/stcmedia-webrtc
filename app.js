@@ -31,6 +31,9 @@ const rooms = [
 app.get("/", (req, res) => {
   res.sendFile(process.cwd() + "/public/index.html");
 });
+//======================================================================================//
+
+//========================== THE BEGINNING OF CREATING A ROOM ==========================//
 //  Room creation using the POST request
 app.post("/create-room", (req, res) => {
   // Parse the body of the incoming request
@@ -45,7 +48,8 @@ app.post("/create-room", (req, res) => {
     const { roomName, userId } = JSON.parse(body);
     // Check if room already exist
     const existingRoom = rooms.find((room) => {
-      room.roomName === roomName;
+      // Always return the value to be passed and used in the variable
+      return room.roomName === roomName;
     });
     // Check if "existingRoom" has a been created already
     if (existingRoom) {
@@ -62,7 +66,7 @@ app.post("/create-room", (req, res) => {
       rooms.push({
         roomName,
         peer1: userId,
-        peer1: null,
+        peer2: null,
       });
       // Send a success message to the client
       const successMessage = {
@@ -76,6 +80,52 @@ app.post("/create-room", (req, res) => {
   });
 });
 //============================= THE END OF CREATING A ROOM =============================//
+
+//========================= THE BEGINNING OF DESTROYING A ROOM =========================//
+app.post("/destroy-room", (req, res) => {
+  // console.log(req);
+  // console.log(res);
+  // Parse the body of the incoming request
+  let body = "";
+  // "Data"
+  req.on("data", (chunk) => {
+    body += chunk.toString();
+  });
+  // "End"
+  req.on("end", () => {
+    // extract the variables from our body
+    const { roomName } = JSON.parse(body);
+    // Check if room already exist
+    const existingRoomIndex = rooms.findIndex((room) => {
+      // Always "return" the value to be passed and used in the variable
+      return room.roomName === roomName;
+    });
+    // Check if the room exist by also comparing "existingRoomIndex" with "-1"
+    if (existingRoomIndex !== -1) {
+      // If a room wth the "roomName" exist remove it with the "splice()" method
+      rooms.slice(existingRoomIndex, 1);
+      console.log(
+        "Peer1 (in this case is the creator) has left the room and removed from the database before anyone else has joined the room"
+      );
+      const successMessage = {
+        data: {
+          type: constants.type.ROOM_DESTR0Y.RESPONSE_SUCCESS,
+          message: "The room has been removed from the server",
+        },
+      };
+      return res.status(200).json(successMessage);
+    } else {
+      const failureMessage = {
+        data: {
+          type: constants.type.ROOM_DESTR0Y.RESPONSE_FAILURE,
+          message: "The server failed to find and or remove the room from the server",
+        },
+      };
+      return res.status(400).json(failureMessage);
+    }
+  });
+});
+//============================ THE END OF DESTROYING A ROOM ============================//
 
 //======================================================================================//
 // Serve static html file

@@ -2,7 +2,9 @@
 import * as uiUtils from "./uiUtils.js";
 import * as constants from "./constants.js";
 import * as state from "./state.js";
+//================================================================================//
 
+//================================== createRoom ==================================//
 // Send AJAX request to create a new room using the fetch API
 export function createRoom(roomName, userId) {
   fetch("/create-room", {
@@ -39,8 +41,10 @@ export function createRoom(roomName, userId) {
       );
     });
 }
+//================================================================================//
 
-async function create(roomName, userId) {
+//================================================================================//
+async function createRoomAjax(roomName, userId) {
   try {
     const response = await fetch("/create-room", {
       method: "POST",
@@ -64,3 +68,35 @@ async function create(roomName, userId) {
     throw error;
   }
 }
+//================================================================================//
+
+//===============================  destroyRoomAjax ===============================//
+// Destroying a room before peer 2 has entered
+export async function destroyRoomAjax(roomName) {
+  fetch("/destroy-room", {
+    method: "POST",
+    headers: { "Content-Type": "application.json" },
+    body: JSON.stringify({ roomName }),
+  })
+    .then((response) => response.json())
+    .then((resObj) => {
+      // console.log(resObj);
+      // Logic to check for room destroy success
+      if (resObj.data.type === constants.type.ROOM_DESTR0Y.RESPONSE_SUCCESS) {
+        uiUtils.exitRoom();
+        uiUtils.logToCustomConsole(resObj.data.message);
+      }
+      // Logic to check for room destroy failure
+      if (resObj.data.type === constants.type.ROOM_DESTR0Y.RESPONSE_FAILURE) {
+        uiUtils.logToCustomConsole(resObj.data.message, constants.myColors.red);
+      }
+    })
+    .catch((error) => {
+      console.log(`An error ocurred trying to destroy your room: ${error}`);
+      uiUtils.logToCustomConsole(
+        `There was a error trying to destroy your room: ${error}`,
+        constants.myColors.red
+      );
+    });
+}
+//================================================================================//

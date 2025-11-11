@@ -51,6 +51,7 @@ const offereeIceButton = document.getElementById("ice_offeree");
 export const DOM = {
   createRoomButton,
   inputRoomNameElement,
+  destroyRoomButton,
 };
 //====================================================================================//
 
@@ -96,12 +97,32 @@ function closeModal() {
 }
 //====================================================================================//
 
+//================================= enterKeyPressed ==================================//
+inputRoomNameElement.addEventListener("keypress", enterKeyPressed);
+function enterKeyPressed(e) {
+  if (e.key === "Enter") {
+    // console.log(e.key);
+    createRoomButton.click();
+  }
+}
+//====================================================================================//
+
 //============================== creatorToProceedToRoom ==============================//
 export function creatorToProceedToRoom() {
   LandingPageContainer.style.display = "none"; // This hides the landing page
   exitButton.classList.add("hide");
   roomInterface.classList.remove("hidden"); // The shows the room interface
-  roomNameHeadingTag.textContent = `You are in the room ${state.getState().roomName}`;
+  roomNameHeadingTag.textContent = `You are in the ${state.getState().roomName} chat`;
+}
+//====================================================================================//
+
+//===================================== exitRoom =====================================//
+export function exitRoom() {
+  inputRoomNameElement.value = " "; // Clear the text input field
+  LandingPageContainer.style.display = "block"; // This shows the landing page
+  roomInterface.classList.remove("hide"); // This hides the room interface
+  // Reset state
+  state.resetState();
 }
 //====================================================================================//
 

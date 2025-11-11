@@ -29,8 +29,9 @@ function handleMessage(messageObject) {
 }
 
 function handleClose(closeEventObject) {
+  // console.log(closeEventObject);
   uiUtils.logToCustomConsole(
-    `You have been disconnected from our web socket server: ${closeEventObject}`,
+    `You have been disconnected from our web socket server, with a code: ${closeEventObject.code}`,
     null,
     true,
     constants.myColors.red

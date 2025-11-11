@@ -27,6 +27,10 @@ export const setWsConnection = (wsConnection) => {
 export const setRoomName = (roomName) => {
   setState({ roomName });
 };
+// Reset the "state" object "roomName" property back to null
+export const resetState = () => {
+  setState({ roomName: null });
+};
 // Define the getter for a "state{}" object
 export const getState = () => {
   return state;
