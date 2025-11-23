@@ -52,6 +52,7 @@ export const DOM = {
   createRoomButton,
   inputRoomNameElement,
   destroyRoomButton,
+  joinRoomButton,
 };
 //====================================================================================//
 
@@ -120,7 +121,7 @@ export function creatorToProceedToRoom() {
 export function exitRoom() {
   inputRoomNameElement.value = " "; // Clear the text input field
   LandingPageContainer.style.display = "block"; // This shows the landing page
-  roomInterface.classList.remove("hide"); // This hides the room interface
+  roomInterface.classList.add("hidden"); // This hides the room interface
   // Reset state
   state.resetState();
 }

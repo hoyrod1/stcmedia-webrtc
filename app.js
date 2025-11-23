@@ -3,6 +3,7 @@ import http from "http"; // Native module
 import express from "express";
 import { WebSocketServer } from "ws";
 import * as constants from "./constants.js";
+import { joinRoom } from "./public/modules/ws.js";
 // Define a port for live and testing environments
 const PORT = process.env.PORT || 8080;
 // initialize the expess aplication
@@ -103,7 +104,7 @@ app.post("/destroy-room", (req, res) => {
     // Check if the room exist by also comparing "existingRoomIndex" with "-1"
     if (existingRoomIndex !== -1) {
       // If a room wth the "roomName" exist remove it with the "splice()" method
-      rooms.slice(existingRoomIndex, 1);
+      rooms.splice(existingRoomIndex, 1);
       console.log(
         "Peer1 (in this case is the creator) has left the room and removed from the database before anyone else has joined the room"
       );
@@ -139,7 +140,7 @@ app.post("/destroy-room", (req, res) => {
 const wss = new WebSocketServer({ server });
 //======================================================================================//
 
-//======================================================================================//
+//================================ wss.on("connection") ================================//
 // Web sockets have 4 events
 // 1. (onconnection) event
 // 2. (onmessage) event
@@ -148,7 +149,7 @@ const wss = new WebSocketServer({ server });
 wss.on("connection", (ws, req) => handleConnection(ws, req));
 //======================================================================================//
 
-//======================================================================================//
+//================================== handleConnection ==================================//
 function handleConnection(ws, req) {
   //------------------------------------------------------------------------------------//
   const userId = extractUserId(req);
@@ -189,17 +190,6 @@ function extractUserId(req) {
 }
 //======================================================================================//
 
-//=================================== handleMessage() ==================================//
-function handleMessage(data) {
-  try {
-    // Handle logic later
-  } catch (error) {
-    console.log("Failed to parse message: ", error);
-    return;
-  }
-}
-//======================================================================================//
-
 //================================ handleDisconnection() ===============================//
 function handleDisconnection(userId) {
   // Find the index of the connetion associated with the uder ID
@@ -214,10 +204,167 @@ function handleDisconnection(userId) {
   // Provide feedback
   console.log(`User: ${userId} was removed from connection`);
   console.log(`Total connected users: ${connections.length}`);
+  // Remove a room when a client closes the browser
+  rooms.forEach((room) => {
+    // Remove the user from the room
+    if (room.peer1 === userId) {
+      room.peer1 = null;
+    }
+    if (room.peer2 === userId) {
+      room.peer2 = null;
+    }
+    // Clear the empty room
+    if (room.peer1 === null && room.peer2 === null) {
+      const roomIndex = rooms.findIndex((roomInArray) => {
+        return roomInArray.roomName === room.roomName;
+      });
+      if (roomIndex !== -1) {
+        rooms.splice(roomIndex, 1);
+        console.log(`Room ${room.roomName} has been removed!`);
+      }
+    }
+  });
+}
+//======================================================================================//
+
+//=================================== handleMessage() ==================================//
+function handleMessage(data) {
+  try {
+    // Handle logic later
+    let message = JSON.parse(data);
+    // process message depending on its label type
+    switch (message.label) {
+      case constants.labels.NORMAL_SERVER_PROCESS:
+        console.log("==== NORMAL SERVER MESSAGE ====");
+        normalServerProcessing(message.data);
+        break;
+
+      default:
+        console.log("Uknown message label:", message.label);
+      // break;
+    }
+  } catch (error) {
+    console.log("Failed to parse message: ", error);
+    return;
+  }
 }
 //======================================================================================//
 
 //======================================================================================//
+// Normal Server
+function normalServerProcessing(data) {
+  // Process the request depending on the data type
+  switch (data.type) {
+    case constants.type.ROOM_JOIN.REQUEST:
+      joinRoomHandler(data);
+      break;
+
+    default:
+      console.log("Uknown message label:", data.type);
+    // break;
+  }
+}
+//======================================================================================//
+
+//=================================== joinRoomHandler ===================================//
+function joinRoomHandler(data) {
+  // console.log(data);
+  const { roomName, userId } = data;
+  const existingRoom = rooms.find((room) => room.roomName === roomName);
+  let otherUserId = null;
+  //---------------------------------------------------------------------//
+  // 1. Check whether the room exist.
+  if (!existingRoom) {
+    // Send a failure message to the console
+    console.log("A user tried to join the room but the room doesn't exist");
+    const failureMessage = {
+      label: constants.labels.NORMAL_SERVER_PROCESS,
+      data: {
+        type: constants.type.ROOM_JOIN.RESPONSE_FAILURE,
+        message: "The room with that name does not exist",
+      },
+    };
+    // Send a failure response back to the user
+    sendWebSocketMessageToUser(userId, failureMessage);
+    return;
+  }
+  //---------------------------------------------------------------------//
+  // 2. Check whether the room is full.
+  if (existingRoom.peer1 && existingRoom.peer2) {
+    // Send a failure message to the console
+    console.log("A user tried to join but the room is full");
+    const failureMessage = {
+      label: constants.labels.NORMAL_SERVER_PROCESS,
+      data: {
+        type: constants.type.ROOM_JOIN.RESPONSE_FAILURE,
+        message: "This room already has two participants",
+      },
+    };
+    // Send a failure response back to the user
+    sendWebSocketMessageToUser(userId, failureMessage);
+    return;
+  }
+  //---------------------------------------------------------------------//
+  // 3. Allow user to join a room
+  // At this point if our code executes the room is both available and exist
+  console.log("A user is attempting to enter/join the room");
+  if (!existingRoom.peer1) {
+    existingRoom.peer1 = userId;
+    otherUserId = existingRoom.peer2;
+    console.log(`Added user: ${userId} as peer1`);
+  } else {
+    existingRoom.peer2 = userId;
+    otherUserId = existingRoom.peer1;
+    console.log(`Added user: ${userId} as peer2`);
+  }
+  // Send a success message
+  const successMessage = {
+    label: constants.labels.NORMAL_SERVER_PROCESS,
+    data: {
+      type: constants.type.ROOM_JOIN.RESPONSE_SUCCESS,
+      message: `You have successfully joined room ${existingRoom.roomName}`,
+      creatorsId: otherUserId,
+    },
+  };
+  // Send a success response back to the user
+  sendWebSocketMessageToUser(userId, successMessage);
+  //---------------------------------------------------------------------//
+  // 3. Notify the other user that a peer has joined a room
+  const notificationMessage = {
+    label: constants.labels.NORMAL_SERVER_PROCESS,
+    data: {
+      type: constants.type.ROOM_JOIN.NOTIFY,
+      message: `User: ${userId} has joined room`,
+    },
+    joineeId: userId,
+  };
+  // Sene notification message to the other user
+  sendWebSocketMessageToUser(otherUserId, notificationMessage);
+  //---------------------------------------------------------------------//
+  // Return function
+  return;
+}
+//======================================================================================//
+
+//======================================================================================//
+// WebRTC Server
+//======================================================================================//
+
+//======================================================================================//
+// Websocket server generic function
+// Send a message to a specific user
+function sendWebSocketMessageToUser(sendToUserId, message) {
+  const userConnection = connections.find((connObj) => connObj.userId === sendToUserId);
+  if (userConnection && userConnection.wsConnection) {
+    userConnection.wsConnection.send(JSON.stringify(message));
+    console.log(`Message sent to ${sendToUserId}`);
+  } else {
+    console.log(`User ${sendToUserId} not found`);
+  }
+}
+//======================================================================================//
+
+//================================= SPIN UP THE SERVER =================================//
 // APPLICATION LISTENING ON PORT 9000//
 server.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
