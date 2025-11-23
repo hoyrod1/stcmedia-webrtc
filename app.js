@@ -329,7 +329,7 @@ function joinRoomHandler(data) {
   // Send a success response back to the user
   sendWebSocketMessageToUser(userId, successMessage);
   //---------------------------------------------------------------------//
-  // 3. Notify the other user that a peer has joined a room
+  // 4. Notify the other user that a peer has joined a room
   const notificationMessage = {
     label: constants.labels.NORMAL_SERVER_PROCESS,
     data: {
