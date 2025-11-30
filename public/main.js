@@ -1,7 +1,6 @@
 console.log("==================== Insanity Check For main.js ====================");
 //================================================================================//
 import * as uiUtils from "./modules/uiUtils.js";
-import { DOM } from "./modules/uiUtils.js";
 import * as ws from "./modules/ws.js";
 import * as ajax from "./modules/ajax.js";
 import * as state from "./modules/state.js";
@@ -23,7 +22,7 @@ ws.registerSocketEvent(wsClientConnection);
 
 //============================ Peer1 createRoomButton ============================//
 // Register eventlistener to "createRoomButton"
-DOM.createRoomButton.addEventListener("click", roomButton);
+uiUtils.DOM.createRoomButton.addEventListener("click", roomButton);
 function roomButton(e) {
   // console.log(e);
   const roomName = uiUtils.DOM.inputRoomNameElement.value;
@@ -39,7 +38,7 @@ function roomButton(e) {
 
 //============================ Peer1 destroyRoomButton ===========================//
 // Destroying the room (before the second peer has entered the room)
-DOM.destroyRoomButton.addEventListener("click", destroyRoom);
+uiUtils.DOM.destroyRoomButton.addEventListener("click", destroyRoom);
 function destroyRoom(e) {
   // console.log(e);
   const roomName = state.getState().roomName;
@@ -49,10 +48,10 @@ function destroyRoom(e) {
 
 //================================ Peer2 joinRoom ================================//
 // Peer2 join room
-DOM.joinRoomButton.addEventListener("click", joinRoom);
+uiUtils.DOM.joinRoomButton.addEventListener("click", joinRoom);
 function joinRoom(e) {
   // console.log(e);
-  const roomName = DOM.inputRoomNameElement.value;
+  const roomName = uiUtils.DOM.inputRoomNameElement.value;
   if (roomName) {
     return alert("You have to join a room with a valid name!");
   }

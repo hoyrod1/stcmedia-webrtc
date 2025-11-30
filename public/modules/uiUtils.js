@@ -112,8 +112,26 @@ function enterKeyPressed(e) {
 export function creatorToProceedToRoom() {
   LandingPageContainer.style.display = "none"; // This hides the landing page
   exitButton.classList.add("hide");
-  roomInterface.classList.remove("hidden"); // The shows the room interface
+  roomInterface.classList.remove("hidden"); // This shows the room interface
   roomNameHeadingTag.textContent = `You are in the ${state.getState().roomName} chat`;
+}
+//====================================================================================//
+
+//============================== joineeToProceedToRoom ===============================//
+export function joineeToProceedToRoom() {
+  LandingPageContainer.style.display = "none"; // This hides the landing page
+  roomInterface.classList.remove("hidden"); // This shows the room interface
+  destroyRoomButton.classList.add("hide");
+  roomNameHeadingTag.textContent = `You have entered the ${
+    state.getState().roomName
+  } chat`;
+}
+//====================================================================================//
+
+//====================================================================================//
+export function updateCreatorsRoom() {
+  destroyRoomButton.classList.add("hide");
+  exitButton.classList.remove("hide");
 }
 //====================================================================================//
 

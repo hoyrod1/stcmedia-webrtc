@@ -3,7 +3,7 @@ import http from "http"; // Native module
 import express from "express";
 import { WebSocketServer } from "ws";
 import * as constants from "./constants.js";
-import { joinRoom } from "./public/modules/ws.js";
+// import { joinRoom } from "./public/modules/ws.js";
 // Define a port for live and testing environments
 const PORT = process.env.PORT || 8080;
 // initialize the expess aplication
@@ -323,7 +323,8 @@ function joinRoomHandler(data) {
     data: {
       type: constants.type.ROOM_JOIN.RESPONSE_SUCCESS,
       message: `You have successfully joined room ${existingRoom.roomName}`,
-      creatorsId: otherUserId,
+      creatorId: otherUserId,
+      roomName: existingRoom.roomName,
     },
   };
   // Send a success response back to the user
@@ -335,8 +336,8 @@ function joinRoomHandler(data) {
     data: {
       type: constants.type.ROOM_JOIN.NOTIFY,
       message: `User: ${userId} has joined room`,
+      joinUserId: userId,
     },
-    joineeId: userId,
   };
   // Sene notification message to the other user
   sendWebSocketMessageToUser(otherUserId, notificationMessage);

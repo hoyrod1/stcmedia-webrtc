@@ -96,19 +96,32 @@ function normalServerProcessing(data) {
       uiUtils.logToCustomConsole(data.message, constants.myColors.red);
       break;
     // Joined room - notification
-    case constants.type.ROOM_JOIN.RESPONSE_FAILURE:
+    case constants.type.ROOM_JOIN.NOTIFY:
       joinNotificationHandler(data);
       break;
     // Catch-all
     default:
       console.log("Unknown data type: ", data.type);
-      break;
   }
 }
 //================================================================================================//
 
 //====================================== joinSuccessHandler ======================================//
+// User successfully joined the room
 function joinSuccessHandler(data) {
-  state.setOtherUserId(data.creatorsId);
+  state.setOtherUserId(data.creatorId);
+  state.setRoomName(data.roomName);
+  uiUtils.joineeToProceedToRoom();
+}
+//================================================================================================//
+
+//=================================== joinNotificationHandler ====================================//
+function joinNotificationHandler(data) {
+  alert(`User ${data.joinerUserId} has joined your room`);
+  uiUtils.logToCustomConsole(
+    `${data.joinerUserId} has joined your room: (${data.message})`,
+    constants.myColors.green
+  );
+  uiUtils.updateCreatorsRoom();
 }
 //================================================================================================//
