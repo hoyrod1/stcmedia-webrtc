@@ -19,7 +19,7 @@ export function createRoom(roomName, userId) {
       // console.log(resObj);
       // console.log(constants.type);
       // Logic for fetch success
-      if (resObj.data.type === constants.type.ROOM_CHECK.RESPONSE_SUCCESS) {
+      if (resObj.data.type === constants.type.ROOM_CREATE.RESPONSE_SUCCESS) {
         state.setRoomName(roomName);
         uiUtils.logToCustomConsole("Your room was created!", constants.myColors.green);
         uiUtils.logToCustomConsole(
@@ -29,7 +29,7 @@ export function createRoom(roomName, userId) {
         uiUtils.creatorToProceedToRoom();
       }
       // Logic for fetch failure
-      if (resObj.data.type === constants.type.ROOM_CHECK.RESPONSE_FAILURE) {
+      if (resObj.data.type === constants.type.ROOM_CREATE.RESPONSE_FAILURE) {
         uiUtils.logToCustomConsole(resObj.data.message, constants.myColors.red);
       }
     })

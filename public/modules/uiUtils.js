@@ -53,6 +53,7 @@ export const DOM = {
   inputRoomNameElement,
   destroyRoomButton,
   joinRoomButton,
+  exitButton,
 };
 //====================================================================================//
 
@@ -125,6 +126,7 @@ export function joineeToProceedToRoom() {
   roomNameHeadingTag.textContent = `You have entered the ${
     state.getState().roomName
   } chat`;
+  messagesContainer.innerHTML = "Please wait... connecting via webRTC";
 }
 //====================================================================================//
 
@@ -132,6 +134,7 @@ export function joineeToProceedToRoom() {
 export function updateCreatorsRoom() {
   destroyRoomButton.classList.add("hide");
   exitButton.classList.remove("hide");
+  messagesContainer.innerHTML = "Please wait... connecting via webRTC";
 }
 //====================================================================================//
 
@@ -142,6 +145,15 @@ export function exitRoom() {
   roomInterface.classList.add("hidden"); // This hides the room interface
   // Reset state
   state.resetState();
+}
+//====================================================================================//
+
+//============================= updateUiForRemainingUser =============================//
+export function updateUiForRemainingUser() {
+  alert("A user has left the room!");
+  state.setOtherUserId(null);
+  messagesContainer.innerHTML = "Waiting for a peer to join";
+  //  Add more logic later
 }
 //====================================================================================//
 

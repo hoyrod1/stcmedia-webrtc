@@ -57,7 +57,7 @@ app.post("/create-room", (req, res) => {
       // If a room has already been created send a failure message back to the client
       const failureMessage = {
         data: {
-          type: constants.type.ROOM_CHECK.RESPONSE_FAILURE,
+          type: constants.type.ROOM_CREATE.RESPONSE_FAILURE,
           message: "That room has already been created, try another name or join",
         },
       };
@@ -72,7 +72,7 @@ app.post("/create-room", (req, res) => {
       // Send a success message to the client
       const successMessage = {
         data: {
-          type: constants.type.ROOM_CHECK.RESPONSE_SUCCESS,
+          type: constants.type.ROOM_CREATE.RESPONSE_SUCCESS,
           message: "The room has successfully been created",
         },
       };
@@ -206,6 +206,22 @@ function handleDisconnection(userId) {
   console.log(`Total connected users: ${connections.length}`);
   // Remove a room when a client closes the browser
   rooms.forEach((room) => {
+    // Using the ternary operator to determine the ID of the other user
+    // The other users ID will be used to send and notify the other user
+    // That the other user has left the room
+    const otherUserId = room.peer1 === userId ? room.peer2 : room.peer1;
+    // Define the message to send to the other user
+    const notificationMessage = {
+      label: constants.labels.NORMAL_SERVER_PROCESS,
+      data: {
+        type: constants.type.ROOM_DISCONNECTION.NOTIFY,
+        message: `User ${userId} has been disconnected`,
+      },
+    };
+    // Push the message to the other user
+    if (otherUserId) {
+      sendWebSocketMessageToUser(otherUserId, notificationMessage);
+    }
     // Remove the user from the room
     if (room.peer1 === userId) {
       room.peer1 = null;
@@ -250,7 +266,7 @@ function handleMessage(data) {
 }
 //======================================================================================//
 
-//======================================================================================//
+//=============================== normalServerProcessing ===============================//
 // Normal Server
 function normalServerProcessing(data) {
   // Process the request depending on the data type
@@ -258,7 +274,9 @@ function normalServerProcessing(data) {
     case constants.type.ROOM_JOIN.REQUEST:
       joinRoomHandler(data);
       break;
-
+    case constants.type.ROOM_EXIT.REQUEST:
+      exitRoomHandler(data);
+      break;
     default:
       console.log("Uknown message label:", data.type);
     // break;
@@ -281,7 +299,8 @@ function joinRoomHandler(data) {
       label: constants.labels.NORMAL_SERVER_PROCESS,
       data: {
         type: constants.type.ROOM_JOIN.RESPONSE_FAILURE,
-        message: "The room with that name does not exist",
+        message:
+          "The room with that name does not exist, please check the correct room name or create a room",
       },
     };
     // Send a failure response back to the user
@@ -339,7 +358,59 @@ function joinRoomHandler(data) {
       joinUserId: userId,
     },
   };
-  // Sene notification message to the other user
+  // 5. Send notification message to the other user
+  sendWebSocketMessageToUser(otherUserId, notificationMessage);
+  //---------------------------------------------------------------------//
+  // Return function
+  return;
+}
+//======================================================================================//
+
+//================================== exitRoomHandler ===================================//
+function exitRoomHandler(data) {
+  const { roomName, userId } = data;
+  //------------------------------------------------------------//
+  const existingRoom = rooms.find((room) => room.roomName === roomName);
+  //------------------------------------------------------------//
+  const otherUserId =
+    existingRoom.peer1 === userId ? existingRoom.peer2 : existingRoom.peer1;
+  //------------------------------------------------------------//
+  if (!existingRoom) {
+    console.log(`${roomName} does not exist`);
+    return;
+  }
+  //------------------------------------------------------------//
+  // Remove user from the existing room
+  if (existingRoom.peer1 === userId) {
+    existingRoom.peer1 = null;
+    console.log("Removed peer1 from the room object", existingRoom);
+  } else {
+    existingRoom.peer2 = null;
+    console.log("Removed peer2 from the room object", existingRoom);
+  }
+  //------------------------------------------------------------//
+  // Clear the empty room
+  if (existingRoom.peer1 === null && existingRoom.peer2 === null) {
+    const roomIndex = rooms.findIndex((room) => {
+      return room.roomName === roomName;
+    });
+    //------------------------------------------------------------//
+    if (roomIndex !== -1) {
+      rooms.splice(roomIndex, 1);
+      console.log(`Room ${roomName} has been removed!`);
+    }
+    return;
+  }
+  //------------------------------------------------------------//
+  // Notify the user that a peer has exited the room
+  const notificationMessage = {
+    label: constants.labels.NORMAL_SERVER_PROCESS,
+    data: {
+      type: constants.type.ROOM_EXIT.NOTIFY,
+      message: `User: ${userId} has exited the room, another user can now join`,
+    },
+  };
+  // Send notification message to the other user
   sendWebSocketMessageToUser(otherUserId, notificationMessage);
   //---------------------------------------------------------------------//
   // Return function

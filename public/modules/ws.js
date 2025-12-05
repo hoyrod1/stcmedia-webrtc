@@ -66,10 +66,25 @@ export function joinRoom(roomName, userId) {
 }
 //=================================================================================================//
 
+//============================================ exitRoom ===========================================//
+export function exitRoom(roomName, userId) {
+  const message = {
+    label: constants.labels.NORMAL_SERVER_PROCESS,
+    data: {
+      type: constants.type.ROOM_EXIT.REQUEST,
+      roomName,
+      userId,
+    },
+  };
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+}
+//=================================================================================================//
+
 //*************************************** INCOMING MESSAGES ***************************************//
 //========================================= handleMessage ========================================//
-function handleMessage(messageObject) {
-  const message = JSON.parse(messageObject);
+function handleMessage(incomingMessageEventObject) {
+  // console.log(messageObject.data);
+  const message = JSON.parse(incomingMessageEventObject.data);
   // Process message depending on its label
   switch (message.label) {
     case constants.labels.NORMAL_SERVER_PROCESS:
@@ -99,6 +114,14 @@ function normalServerProcessing(data) {
     case constants.type.ROOM_JOIN.NOTIFY:
       joinNotificationHandler(data);
       break;
+    // Exit room - notification
+    case constants.type.ROOM_EXIT.NOTIFY:
+      exitNotificationHandler(data);
+      break;
+    // Disconnection - notification
+    case constants.type.ROOM_DISCONNECTION.NOTIFY:
+      exitNotificationHandler(data);
+      break;
     // Catch-all
     default:
       console.log("Unknown data type: ", data.type);
@@ -117,11 +140,20 @@ function joinSuccessHandler(data) {
 
 //=================================== joinNotificationHandler ====================================//
 function joinNotificationHandler(data) {
-  alert(`User ${data.joinerUserId} has joined your room`);
+  console.log(data);
+  alert(`User ${data.joinUserId} has joined your room`);
+  state.setOtherUserId(data.joinUserId);
   uiUtils.logToCustomConsole(
-    `${data.joinerUserId} has joined your room: (${data.message})`,
+    `${data.joinUserId} has joined your room: (${data.message})`,
     constants.myColors.green
   );
   uiUtils.updateCreatorsRoom();
+}
+//================================================================================================//
+
+//=================================== exitNotificationHandler ====================================//
+function exitNotificationHandler(data) {
+  uiUtils.logToCustomConsole(data.message, constants.myColors.red);
+  uiUtils.updateUiForRemainingUser();
 }
 //================================================================================================//

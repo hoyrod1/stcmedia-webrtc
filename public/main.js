@@ -52,9 +52,22 @@ uiUtils.DOM.joinRoomButton.addEventListener("click", joinRoom);
 function joinRoom(e) {
   // console.log(e);
   const roomName = uiUtils.DOM.inputRoomNameElement.value;
-  if (roomName) {
+  if (!roomName) {
     return alert("You have to join a room with a valid name!");
   }
   ws.joinRoom(roomName, userId);
+}
+//================================================================================//
+//================================================================================//
+
+//================================== exitButton ==================================//
+uiUtils.DOM.exitButton.addEventListener("click", exitButton);
+function exitButton(e) {
+  // console.log(e);
+  const roomName = state.getState().roomName;
+  uiUtils.exitRoom();
+  ws.exitRoom(roomName, userId);
+  uiUtils.logToCustomConsole(`${roomName}, has left the room.`);
+  // Later, we will need to close the webRtc
 }
 //================================================================================//

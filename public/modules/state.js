@@ -50,7 +50,10 @@ export const setRoomName = (roomName) => {
 //======================================================================================//
 // Reset the "state" object "roomName" property back to null
 export const resetState = () => {
-  setState({ roomName: null });
+  setState({
+    roomName: null,
+    otherUserId: null,
+  });
 };
 //======================================================================================//
 
