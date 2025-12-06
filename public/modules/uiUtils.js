@@ -127,6 +127,9 @@ export function joineeToProceedToRoom() {
     state.getState().roomName
   } chat`;
   messagesContainer.innerHTML = "Please wait... connecting via webRTC";
+  // Show the process button for learning and understanding the process
+  offerorButtonsContainer.classList.remove("hidden");
+  offerorButtonsContainer.classList.add("show");
 }
 //====================================================================================//
 

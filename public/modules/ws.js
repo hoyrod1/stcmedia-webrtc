@@ -1,6 +1,7 @@
 import * as state from "./state.js";
 import * as uiUtils from "./uiUtils.js";
 import * as constants from "./constants.js";
+import * as webRTCHandler from "./webRTCHandler.js";
 //=================================================================================================//
 
 //======================================= registerSocketEvent =====================================//
@@ -97,7 +98,9 @@ function handleMessage(incomingMessageEventObject) {
   }
 }
 //================================================================================================//
+//------------------------------------------------------------------------------------------------//
 
+//------------------------------------------------------------------------------------------------//
 //==================================== normalServerProcessing ====================================//
 function normalServerProcessing(data) {
   // Process the data depending on the data type
@@ -106,7 +109,7 @@ function normalServerProcessing(data) {
     case constants.type.ROOM_JOIN.RESPONSE_SUCCESS:
       joinSuccessHandler(data);
       break;
-    // Successfully joined room
+    // Failure to join room
     case constants.type.ROOM_JOIN.RESPONSE_FAILURE:
       uiUtils.logToCustomConsole(data.message, constants.myColors.red);
       break;
@@ -135,12 +138,14 @@ function joinSuccessHandler(data) {
   state.setOtherUserId(data.creatorId);
   state.setRoomName(data.roomName);
   uiUtils.joineeToProceedToRoom();
+  // Start the webRTC process
+  webRTCHandler.startWebRTCProcess();
 }
 //================================================================================================//
 
 //=================================== joinNotificationHandler ====================================//
 function joinNotificationHandler(data) {
-  console.log(data);
+  // console.log(data);
   alert(`User ${data.joinUserId} has joined your room`);
   state.setOtherUserId(data.joinUserId);
   uiUtils.logToCustomConsole(
