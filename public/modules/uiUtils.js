@@ -19,7 +19,10 @@ const createRoomButton = document.getElementById("create_room_button");
 const sendMessageButton = document.getElementById("send_message_button");
 const destroyRoomButton = document.getElementById("destroy_button");
 const exitButton = document.getElementById("exit_button");
-// learning purposes
+//=====================================================================================//
+
+//================================= learning purposes =================================//
+//-------------------------------------- offeror --------------------------------------//
 const offerorButtonsContainer = document.getElementById("offeror_process_buttons");
 const offerorCreatePcButton = document.getElementById("create_pc");
 const offerorAddDataTypeButton = document.getElementById("add_data_type");
@@ -32,7 +35,9 @@ const offerorSetRemoteDescriptionButton = document.getElementById(
   "set_remote_description"
 );
 const offerorIceButton = document.getElementById("ice_offeror");
+//-------------------------------------------------------------------------------------//
 
+//-------------------------------------- offeree --------------------------------------//
 const offereeButtonsContainer = document.getElementById("offeree_process_buttons");
 const offereeCreatePcButton = document.getElementById("offeree_create_pc");
 const offereeAddDataTypeButton = document.getElementById("offeree_add_data_type");
@@ -45,7 +50,8 @@ const offereeUpdateLocalDescriptionButton = document.getElementById(
 );
 const offereeSendAnswerButton = document.getElementById("offeree_send_answer");
 const offereeIceButton = document.getElementById("ice_offeree");
-//====================================================================================//
+//-------------------------------------------------------------------------------------//
+//=====================================================================================//
 
 //=============== Exporting all the DOM elements needed in other files ===============//
 export const DOM = {
@@ -54,6 +60,9 @@ export const DOM = {
   destroyRoomButton,
   joinRoomButton,
   exitButton,
+  offeror: {
+    offerorCreatePcButton,
+  },
 };
 //====================================================================================//
 
@@ -182,5 +191,16 @@ export function logToCustomConsole(
   // Append the "messageElementDiv" div to the "consoleDisplay" div
   consoleDisplay.appendChild(messageElementDiv);
   consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
+}
+//====================================================================================//
+
+//====================================================================================//
+// Learning purposes - styling buttons that have been clicked
+export function updateUIButton(button, message) {
+  // update UI of the button
+  button.classList.remove("process_pending");
+  button.classList.add("process_complete");
+  button.setAttribute("disabled", true);
+  logToCustomConsole(message);
 }
 //====================================================================================//
