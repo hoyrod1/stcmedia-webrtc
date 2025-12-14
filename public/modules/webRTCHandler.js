@@ -11,6 +11,8 @@ import * as constants from "./constants.js";
 let pc;
 // We will set the dataChannel up when we create a peer connection
 let dataChannel;
+// Array of ice candidates
+const iceCandidatesGenerated = [];
 //================================== END OF GLOBAL VARIABLES ==================================//
 
 //==================================== webRTCConfiguration ====================================//
@@ -26,6 +28,8 @@ const webRTCConfiguration = {
 
 //==================================== startWebRTCProcess =====================================//
 export function startWebRTCProcess() {
+  // DEFINE FUNCTION SCOPED VARIABLE
+  let offer;
   //-------------------------------------------------------------------------------//
   uiUtils.logToCustomConsole(
     "Step1. Create a WebRTC peer connectiong object by clicking on the first button"
@@ -49,27 +53,67 @@ export function startWebRTCProcess() {
   //-------------------------------------------------------------------------------//
   // Step 3 & 4
   uiUtils.DOM.offeror.offerorAddDataTypeButton.addEventListener("click", (e) => {
-    // console.log(e);
     // Run the createDataChannel function
     createDataChannel(true);
     uiUtils.updateUIButton(
       uiUtils.DOM.offeror.offerorAddDataTypeButton,
       "Now create your WebRTC Offer"
     );
+    // Console log the Peer Connection object
     console.log("Your pc object: after creating a data channel", pc);
   });
+  //-------------------------------------------------------------------------------//
+  // Step 5 - create an offer
+  uiUtils.DOM.offeror.offerorCreateOfferButton.addEventListener("click", async (e) => {
+    offer = await pc.createOffer(); // This is a promise
+    uiUtils.logToCustomConsole(
+      "Successfully created an offer check the browsers console",
+      constants.myColors.green
+    );
+    // Console log the offer
+    console.log("Here is your offer: ", offer);
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeror.offerorCreateOfferButton,
+      "Now you have to update you local peer connection object with your offer"
+    );
+  });
+  //-------------------------------------------------------------------------------//
+  // Step 6 - Adding offer to offeror PeerConnection object
+  // NOTE STEP 7 IS IN THE createPeerConnectionObject() FUNCTION
+  uiUtils.DOM.offeror.offerorSetLocalDescriptionButton.addEventListener(
+    "click",
+    async (e) => {
+      // console.log(e);
+      // Set local Description
+      await pc.setLocalDescription(offer);
+      // Update the UI button
+      uiUtils.updateUIButton(
+        uiUtils.DOM.offeror.offerorSetLocalDescriptionButton,
+        "You must now send your offer to the other peer"
+      );
+      // Console log the Peer Connection object
+      console.log(
+        "Your pc object: after adding your offer to your peer connection object",
+        pc
+      );
+      // Ice candidates will be gathered by the browser
+    }
+  );
+  //-------------------------------------------------------------------------------//
 }
 //================================= END OF startWebRTCProcess =================================//
 
 //================================= createPeerConnectionObject ================================//
 // Create a users local peer connection object by invoking the RTCPeerConnection Object
 function createPeerConnectionObject() {
+  //-----------------------------------------------------------------------------------------//
   // This creates a RTCPeerConnection object that will handle this peers entire webRTC session
   pc = new RTCPeerConnection(webRTCConfiguration);
+  //-----------------------------------------------------------------------------------------//
   // Then register event listeners
   // #1 Listen for webRTC connection state change event(Goal is the "connected" state change)
   pc.addEventListener("connectionstatechange", (e) => {
-    console.log(e);
+    // console.log(e);
     console.log("Connection state changed to: ", pc.connectionState);
     if (pc.connectionState === "connected") {
       alert("A webRTC connection has been established between you and the other peer");
@@ -82,6 +126,7 @@ function createPeerConnectionObject() {
       // Later update UI to remove all learning buttons and allow users to insert text
     }
   });
+  //-----------------------------------------------------------------------------------------//
   // #2 Listen for webRTC signaling state change event
   pc.addEventListener("signalingstatechange", (e) => {
     uiUtils.logToCustomConsole(
@@ -91,11 +136,28 @@ function createPeerConnectionObject() {
       constants.myColors.orange
     );
   });
+  //-----------------------------------------------------------------------------------------//
+  // Step 7 - Listening for ice candidates
+  // #3 Listen for ice candidates generation
+  pc.addEventListener("icecandidate", (e) => {
+    uiUtils.logToCustomConsole(
+      `Ice candidate has been generated: ${e.candidate}`,
+      null,
+      true,
+      constants.myColors.blue
+    );
+    if (e.candidate) {
+      console.log("Ice candidate: ", e.candidate);
+      iceCandidatesGenerated.push(e.candidate);
+    }
+  });
+  //-----------------------------------------------------------------------------------------//
   // Return out of this function
   return uiUtils.logToCustomConsole(
     "You have successfully created a PC object",
     constants.myColors.green
   );
+  //-----------------------------------------------------------------------------------------//
 }
 //============================= END OF createPeerConnectionObject =============================//
 

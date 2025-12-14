@@ -27,7 +27,7 @@ const offerorButtonsContainer = document.getElementById("offeror_process_buttons
 const offerorCreatePcButton = document.getElementById("create_pc");
 const offerorAddDataTypeButton = document.getElementById("add_data_type");
 const offerorCreateOfferButton = document.getElementById("create_offer");
-const offerorUpdateLocalDescriptionButton = document.getElementById(
+const offerorSetLocalDescriptionButton = document.getElementById(
   "update_local_description"
 );
 const offerorSendOfferButton = document.getElementById("send_offer");
@@ -41,7 +41,7 @@ const offerorIceButton = document.getElementById("ice_offeror");
 const offereeButtonsContainer = document.getElementById("offeree_process_buttons");
 const offereeCreatePcButton = document.getElementById("offeree_create_pc");
 const offereeAddDataTypeButton = document.getElementById("offeree_add_data_type");
-const offereeUpdateRemoteDescriptionButton = document.getElementById(
+const offereeSetRemoteDescriptionButton = document.getElementById(
   "offeree_update_remote_description"
 );
 const offereeCreateAnswerButton = document.getElementById("offeree_create_answer");
@@ -63,6 +63,8 @@ export const DOM = {
   offeror: {
     offerorCreatePcButton,
     offerorAddDataTypeButton,
+    offerorCreateOfferButton,
+    offerorSetLocalDescriptionButton,
   },
 };
 //====================================================================================//
