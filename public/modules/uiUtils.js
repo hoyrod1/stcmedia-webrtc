@@ -65,6 +65,7 @@ export const DOM = {
     offerorAddDataTypeButton,
     offerorCreateOfferButton,
     offerorSetLocalDescriptionButton,
+    offerorSendOfferButton,
   },
 };
 //====================================================================================//

@@ -81,6 +81,22 @@ export function exitRoom(roomName, userId) {
 }
 //=================================================================================================//
 
+//=========================================== sendOffer ===========================================//
+export function sendOffer(offer) {
+  // console.log(offer);
+  const message = {
+    label: constants.labels.WEBRTC_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.OFFER,
+      offer,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  // Send Websocket message
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+}
+//=================================================================================================//
+
 //*************************************** INCOMING MESSAGES ***************************************//
 //========================================= handleMessage ========================================//
 function handleMessage(incomingMessageEventObject) {
