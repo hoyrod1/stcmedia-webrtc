@@ -246,13 +246,17 @@ function handleDisconnection(userId) {
 //=================================== handleMessage() ==================================//
 function handleMessage(data) {
   try {
-    // Handle logic later
+    // Convert "data" argument into JSON
     let message = JSON.parse(data);
     // process message depending on its label type
     switch (message.label) {
       case constants.labels.NORMAL_SERVER_PROCESS:
         console.log("==== NORMAL SERVER MESSAGE ====");
         normalServerProcessing(message.data);
+        break;
+      case constants.labels.WEBRTC_PROCESS:
+        console.log("==== WEBRTC SIGANLING PROCESS ====");
+        webRTCServerProcessing(message.data);
         break;
 
       default:
@@ -418,11 +422,34 @@ function exitRoomHandler(data) {
 }
 //======================================================================================//
 
-//======================================================================================//
+//=============================== webRTCServerProcessing ===============================//
 // WebRTC Server
+function webRTCServerProcessing(data) {
+  // Process the WebRTC message based on the "type" property
+  switch (data.type) {
+    case constants.type.WEB_RTC.OFFER:
+      processOffer(data);
+      break;
+    default:
+      console.log("Uknown data type:", data.type);
+      break;
+  }
+}
+//------------------------------------ processOffer ------------------------------------//
+// Send the "data" object to other peer
+function processOffer(data) {
+  // console.log(data);
+  const { otherUserId } = data;
+  const message = {
+    label: constants.labels.WEBRTC_PROCESS,
+    data,
+  };
+  sendWebSocketMessageToUser(otherUserId, message);
+  console.log(`Offer has been sent to the user: `, otherUserId);
+}
 //======================================================================================//
 
-//======================================================================================//
+//============================= sendWebSocketMessageToUser =============================//
 // Websocket server generic function
 // Send a message to a specific user
 function sendWebSocketMessageToUser(sendToUserId, message) {
