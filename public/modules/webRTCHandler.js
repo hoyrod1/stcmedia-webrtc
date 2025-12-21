@@ -1,7 +1,7 @@
 console.log("================== WebRTCHandler File ==================");
 //====================================== Import modules ======================================//
 import * as uiUtils from "./uiUtils.js";
-import { DOM } from "./uiUtils.js";
+// import { DOM } from "./uiUtils.js";
 import * as constants from "./constants.js";
 import * as ws from "./ws.js";
 //=================================== END OF Import modules ===================================//
@@ -37,7 +37,7 @@ export function startWebRTCProcess() {
   );
   //-------------------------------------------------------------------------------//
   // Step. 2
-  DOM.offeror.offerorCreatePcButton.addEventListener("click", (e) => {
+  uiUtils.DOM.offeror.offerorCreatePcButton.addEventListener("click", (e) => {
     // The "createPeerConnectionObject" function is on line 50 //
     createPeerConnectionObject();
     // UI update
@@ -103,7 +103,7 @@ export function startWebRTCProcess() {
   //-------------------------------------------------------------------------------//
   // Step 8 - Send offer to signaling server
   uiUtils.DOM.offeror.offerorSendOfferButton.addEventListener("click", (e) => {
-    console.log(e);
+    // console.log(e);
     ws.sendOffer(offer);
     // Update the UI button
     uiUtils.updateUIButton(
@@ -221,3 +221,20 @@ function registerDataChannelEventListener() {
   });
 }
 //=========================== END OF registerDataChannelEventListener ===========================//
+
+//========================================= handleOffer =========================================//
+export function handleOffer(data) {
+  // console.log(data);
+  uiUtils.logToCustomConsole(
+    "WebRTC offer received, created your peer connection object"
+  );
+  // Show the button to the peer
+  uiUtils.showOffereeButtons();
+  // This is steps 13 and 14
+  // Add event listening to the learning buttons
+  uiUtils.DOM.offeree.offereeCreatePcButton.addEventListener("click", (e) => {
+    // console.log(e);
+    createPeerConnectionObject();
+  });
+}
+//====================================== END OF handleOffer =====================================//

@@ -83,7 +83,7 @@ export function exitRoom(roomName, userId) {
 
 //=========================================== sendOffer ===========================================//
 export function sendOffer(offer) {
-  // console.log(offer);
+  console.log(offer);
   const message = {
     label: constants.labels.WEBRTC_PROCESS,
     data: {
@@ -106,6 +106,9 @@ function handleMessage(incomingMessageEventObject) {
   switch (message.label) {
     case constants.labels.NORMAL_SERVER_PROCESS:
       normalServerProcessing(message.data);
+      break;
+    case constants.labels.WEBRTC_PROCESS:
+      webRTCServerProcessing(message.data);
       break;
 
     default:
@@ -148,6 +151,24 @@ function normalServerProcessing(data) {
 }
 //================================================================================================//
 
+//==================================== webRTCServerProcessing ====================================//
+function webRTCServerProcessing(data) {
+  console.log(data);
+  switch (data.type) {
+    // Steps 11 & 12, The "offer" has been received
+    case constants.type.WEB_RTC.OFFER:
+      webRTCHandler.handleOffer(data);
+      break;
+
+    default:
+      console.log("Unknown data type: ", data);
+      break;
+  }
+}
+//================================================================================================//
+//------------------------------------------------------------------------------------------------//
+
+//------------------------------------------------------------------------------------------------//
 //====================================== joinSuccessHandler ======================================//
 // User successfully joined the room
 function joinSuccessHandler(data) {

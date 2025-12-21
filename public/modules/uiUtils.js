@@ -67,6 +67,10 @@ export const DOM = {
     offerorSetLocalDescriptionButton,
     offerorSendOfferButton,
   },
+  offeree: {
+    offereeCreatePcButton,
+    // offereeAddDataTypeButton,
+  },
 };
 //====================================================================================//
 
@@ -198,7 +202,7 @@ export function logToCustomConsole(
 }
 //====================================================================================//
 
-//====================================================================================//
+//================================== updateUIButton ==================================//
 // Learning purposes - styling buttons that have been clicked
 export function updateUIButton(button, message) {
   // update UI of the button
@@ -206,5 +210,13 @@ export function updateUIButton(button, message) {
   button.classList.add("process_complete");
   button.setAttribute("disabled", true);
   logToCustomConsole(message);
+}
+//====================================================================================//
+
+//================================ showOffereeButtons ================================//
+// Show offeree buttons
+export function showOffereeButtons() {
+  offereeButtonsContainer.classList.remove("hide");
+  offereeButtonsContainer.classList.add("show");
 }
 //====================================================================================//
