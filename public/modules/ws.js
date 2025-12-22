@@ -104,9 +104,11 @@ function handleMessage(incomingMessageEventObject) {
   const message = JSON.parse(incomingMessageEventObject.data);
   // Process message depending on its label
   switch (message.label) {
+    // Normal Server Process
     case constants.labels.NORMAL_SERVER_PROCESS:
       normalServerProcessing(message.data);
       break;
+    // WEBRTC Server Process
     case constants.labels.WEBRTC_PROCESS:
       webRTCServerProcessing(message.data);
       break;

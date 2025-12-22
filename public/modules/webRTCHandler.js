@@ -225,6 +225,7 @@ function registerDataChannelEventListener() {
 //========================================= handleOffer =========================================//
 export function handleOffer(data) {
   // console.log(data);
+  let answer;
   uiUtils.logToCustomConsole(
     "WebRTC offer received, created your peer connection object"
   );
@@ -234,7 +235,76 @@ export function handleOffer(data) {
   // Add event listening to the learning buttons
   uiUtils.DOM.offeree.offereeCreatePcButton.addEventListener("click", (e) => {
     // console.log(e);
+    // Create Peer Object
     createPeerConnectionObject();
+    // UI changes
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeree.offereeCreatePcButton,
+      "Next register an event listener on 'pc' object for the data channel"
+    );
+  });
+  // This is steps 15 and 16
+  uiUtils.DOM.offeree.offereeAddDataTypeButton.addEventListener("click", (e) => {
+    // console.log(e)
+    createDataChannel(false); // Passing in false to ensure that a new "Datachannel Object" is not created
+    // UI changes
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeree.offereeAddDataTypeButton,
+      "Now you can update your 'pc object' by setting the remote description "
+    );
+    // console.log("=====", pc);
+  });
+  // This is steps 17
+  uiUtils.DOM.offeree.offereeSetRemoteDescriptionButton.addEventListener(
+    "click",
+    async (e) => {
+      // console.log(e)
+      // Set Remote Description
+      await pc.setRemoteDescription(data.offer);
+      //  UI changes
+      uiUtils.updateUIButton(
+        uiUtils.DOM.offeree.offereeSetRemoteDescriptionButton,
+        "Next create your answer"
+      );
+    }
+  );
+  // This is steps 18
+  uiUtils.DOM.offeree.offereeCreateAnswerButton.addEventListener("click", async (e) => {
+    // console.log(e)
+    answer = await pc.createAnswer();
+    uiUtils.logToCustomConsole(
+      "Succefully created an answer, why don't upi view it in the console",
+      constants.myColors.green
+    );
+    console.log("Offereree's answer: ", answer);
+    //  UI changes
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeree.offereeCreateAnswerButton,
+      "Next update your local description with your that answer"
+    );
+  });
+  // This is steps 19
+  uiUtils.DOM.offeree.offereeSetLocalDescriptionButton.addEventListener(
+    "click",
+    async (e) => {
+      // console.log(e)
+      // Setting Local Description with the answer
+      await pc.setLocalDescription(answer);
+      // UI changes
+      uiUtils.updateUIButton(
+        uiUtils.DOM.offeree.offereeSetLocalDescriptionButton,
+        "Send your answer to PEER1"
+      );
+    }
+  );
+  // Step 20
+  uiUtils.DOM.offeree.offereeSendAnswerButton.addEventListener("click", (e) => {
+    // console.log(e)
+    ws.sendAnwser(answer);
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeree.offereeSendAnswerButton,
+      "Your answer has been sent, don't forget to send ice candidates"
+    );
   });
 }
 //====================================== END OF handleOffer =====================================//

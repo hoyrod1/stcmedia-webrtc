@@ -44,10 +44,10 @@ const offereeAddDataTypeButton = document.getElementById("offeree_add_data_type"
 const offereeSetRemoteDescriptionButton = document.getElementById(
   "offeree_update_remote_description"
 );
-const offereeCreateAnswerButton = document.getElementById("offeree_create_answer");
-const offereeUpdateLocalDescriptionButton = document.getElementById(
+const offereeSetLocalDescriptionButton = document.getElementById(
   "offeree_update_local_description"
 );
+const offereeCreateAnswerButton = document.getElementById("offeree_create_answer");
 const offereeSendAnswerButton = document.getElementById("offeree_send_answer");
 const offereeIceButton = document.getElementById("ice_offeree");
 //-------------------------------------------------------------------------------------//
@@ -69,7 +69,11 @@ export const DOM = {
   },
   offeree: {
     offereeCreatePcButton,
-    // offereeAddDataTypeButton,
+    offereeAddDataTypeButton,
+    offereeSetRemoteDescriptionButton,
+    offereeCreateAnswerButton,
+    offereeSetLocalDescriptionButton,
+    offereeSendAnswerButton,
   },
 };
 //====================================================================================//
@@ -216,7 +220,7 @@ export function updateUIButton(button, message) {
 //================================ showOffereeButtons ================================//
 // Show offeree buttons
 export function showOffereeButtons() {
-  offereeButtonsContainer.classList.remove("hide");
+  offereeButtonsContainer.classList.remove("hidden");
   offereeButtonsContainer.classList.add("show");
 }
 //====================================================================================//
