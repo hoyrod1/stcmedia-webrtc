@@ -423,21 +423,29 @@ function exitRoomHandler(data) {
 //======================================================================================//
 
 //=============================== webRTCServerProcessing ===============================//
-// WebRTC Server
+// WebRTC Server Version 2 Refactored
 function webRTCServerProcessing(data) {
   // Process the WebRTC message based on the "type" property
   switch (data.type) {
+    // OFFER
     case constants.type.WEB_RTC.OFFER:
-      processOffer(data);
+      signalMessageToOtherUser(data);
+      break;
+    // ANSWER
+    case constants.type.WEB_RTC.ANSWER:
+      signalMessageToOtherUser(data);
+      break;
+    // ICE CANDIDATES
+    case constants.type.WEB_RTC.ICE_CANDIDATES:
+      signalMessageToOtherUser(data);
       break;
     default:
       console.log("Uknown data type:", data.type);
       break;
   }
 }
-//------------------------------------ processOffer ------------------------------------//
-// Send the "data" object to other peer
-function processOffer(data) {
+//----------------------------- signMessageToOtherUser -----------------------------//
+function signalMessageToOtherUser(data) {
   // console.log(data);
   const { otherUserId } = data;
   const message = {
@@ -445,8 +453,65 @@ function processOffer(data) {
     data,
   };
   sendWebSocketMessageToUser(otherUserId, message);
-  console.log(`Offer has been sent to the user: `, otherUserId);
 }
+//======================================================================================//
+
+//======================================================================================//
+// WebRTC Server Version 1
+// function webRTCServerProcessing(data) {
+//   // Process the WebRTC message based on the "type" property
+//   switch (data.type) {
+//     // OFFER
+//     case constants.type.WEB_RTC.OFFER:
+//       processOffer(data);
+//       break;
+//     // ANSWER
+//     case constants.type.WEB_RTC.ANSWER:
+//       processAnswer(data);
+//       break;
+//     // ICE CANDIDATES
+//     case constants.type.WEB_RTC.ICE_CANDIDATES:
+//       processIceCandidates(data);
+//       break;
+//     default:
+//       console.log("Uknown data type:", data.type);
+//       break;
+//   }
+// }
+//------------------------------------ processOffer ------------------------------------//
+// // Send the "data" object to other peer
+// function processOffer(data) {
+//   // console.log(data);
+//   const { otherUserId } = data;
+//   const message = {
+//     label: constants.labels.WEBRTC_PROCESS,
+//     data,
+//   };
+//   sendWebSocketMessageToUser(otherUserId, message);
+//   console.log(`Offer has been sent to the user: ${otherUserId}`);
+// }
+// //----------------------------------- processAnswer ------------------------------------//
+// function processAnswer(data) {
+//   // console.log(data);
+//   const { otherUserId } = data;
+//   const message = {
+//     label: constants.labels.WEBRTC_PROCESS,
+//     data,
+//   };
+//   sendWebSocketMessageToUser(otherUserId, message);
+//   console.log(`Answer has been sent to the user: ${otherUserId}`);
+// }
+// //-------------------------------- processIceCandidates --------------------------------//
+// function processIceCandidates(data) {
+//   // console.log(data);
+//   const { otherUserId } = data;
+//   const message = {
+//     label: constants.labels.WEBRTC_PROCESS,
+//     data,
+//   };
+//   sendWebSocketMessageToUser(otherUserId, message);
+//   console.log(`Ice Candidates has been sent to the user: ${otherUserId}`);
+// }
 //======================================================================================//
 
 //============================= sendWebSocketMessageToUser =============================//

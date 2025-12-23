@@ -51,7 +51,7 @@ function handleError(errorMessage) {
 }
 //=================================================================================================//
 
-//*************************************** OUTGOING MESSAGES ***************************************//
+//******************************** BEGINNING OF OUTGOING MESSAGES *********************************//
 //============================================ joinRoom ===========================================//
 // Outgoing: join room
 export function joinRoom(roomName, userId) {
@@ -97,7 +97,42 @@ export function sendOffer(offer) {
 }
 //=================================================================================================//
 
-//*************************************** INCOMING MESSAGES ***************************************//
+//=========================================== sendAnswer ==========================================//
+// Sending an answer back to the signaling server
+export function sendAnwser(answer) {
+  console.log(answer);
+  const message = {
+    label: constants.labels.WEBRTC_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.ANSWER,
+      answer,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  // Send Websocket message
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+}
+//=================================================================================================//
+
+//======================================= sendIceCandidates =======================================//
+// Sending Ice Candidates to the other PEER
+export function sendIceCandidates(arrayOfIceCandidates) {
+  // console.log(iceCandidates);
+  const message = {
+    label: constants.labels.WEBRTC_PROCESS,
+    data: {
+      type: constants.type.WEB_RTC.ICE_CANDIDATES,
+      candidatesArray: arrayOfIceCandidates,
+      otherUserId: state.getState().otherUserId,
+    },
+  };
+  // Send Websocket message
+  state.getState().userWebSocketConnection.send(JSON.stringify(message));
+}
+//=================================================================================================//
+//********************************** ENDING OF OUTGOING MESSAGES **********************************//
+
+//********************************** BEGINNING INCOMING MESSAGES *********************************//
 //========================================= handleMessage ========================================//
 function handleMessage(incomingMessageEventObject) {
   // console.log(messageObject.data);
@@ -201,3 +236,4 @@ function exitNotificationHandler(data) {
   uiUtils.updateUiForRemainingUser();
 }
 //================================================================================================//
+//*********************************** ENDING INCOMING MESSAGES ***********************************//

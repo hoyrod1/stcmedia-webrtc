@@ -74,6 +74,7 @@ export const DOM = {
     offereeCreateAnswerButton,
     offereeSetLocalDescriptionButton,
     offereeSendAnswerButton,
+    offereeIceButton,
   },
 };
 //====================================================================================//

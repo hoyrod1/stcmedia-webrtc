@@ -273,7 +273,7 @@ export function handleOffer(data) {
     // console.log(e)
     answer = await pc.createAnswer();
     uiUtils.logToCustomConsole(
-      "Succefully created an answer, why don't upi view it in the console",
+      "Succefully created an answer, you can view it in the console",
       constants.myColors.green
     );
     console.log("Offereree's answer: ", answer);
@@ -301,9 +301,27 @@ export function handleOffer(data) {
   uiUtils.DOM.offeree.offereeSendAnswerButton.addEventListener("click", (e) => {
     // console.log(e)
     ws.sendAnwser(answer);
+    // UI changes
     uiUtils.updateUIButton(
       uiUtils.DOM.offeree.offereeSendAnswerButton,
       "Your answer has been sent, don't forget to send ice candidates"
+    );
+    // Show Ice Candidate button
+    uiUtils.DOM.offeree.offereeIceButton.classList.remove("hidden");
+    uiUtils.DOM.offeree.offereeIceButton.classList.add("show-ice");
+  });
+  // Add event listener to the Ice Button
+  uiUtils.DOM.offeree.offereeIceButton.addEventListener("click", (e) => {
+    // console.log(e);
+    ws.sendIceCandidates(iceCandidatesGenerated);
+    uiUtils.logToCustomConsole("Ice Candidates Sent");
+    uiUtils.logToCustomConsole(
+      "🧊 🧊 🧊 Waiting to recieve Ice Candidates from the other PEER 🧊 🧊 🧊"
+    );
+    // UI changes
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeree.offereeIceButton,
+      "You are all done, wait for the other side"
     );
   });
 }
