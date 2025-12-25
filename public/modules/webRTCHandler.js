@@ -326,3 +326,28 @@ export function handleOffer(data) {
   });
 }
 //====================================== END OF handleOffer =====================================//
+
+//========================================= handleAnswer ========================================//
+export function handleAnswer(data) {
+  // console.log(data);
+  uiUtils.logToCustomConsole("Änswer received, send your ice candadtes");
+  uiUtils.DOM.offeror.offerorIceButton.classList.remove("hidden");
+  uiUtils.DOM.offeror.offerorIceButton.classList.add("show-ice");
+  uiUtils.DOM.offeror.offerorIceButton.addEventListener("click", (e) => {
+    // console.log(e);
+    ws.sendIceCandidates(iceCandidatesGenerated);
+    uiUtils.updateUIButton(
+      uiUtils.DOM.offeror.offerorIceButton,
+      "Finally set your remote description"
+    );
+    // Show the setRemoteDescription button
+    uiUtils.DOM.offeror.offerorSetRemoteDescriptionButton.classList.remove("hidden");
+  });
+}
+//===================================== END OF handleAnswer =====================================//
+
+//===================================== handleIceCandidates =====================================//
+// export function handleIceCandidates(data) {
+//   console.log(data);
+// }
+//================================== END OF handleIceCandidates =================================//

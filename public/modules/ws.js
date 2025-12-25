@@ -196,7 +196,16 @@ function webRTCServerProcessing(data) {
     case constants.type.WEB_RTC.OFFER:
       webRTCHandler.handleOffer(data);
       break;
-
+    // Steps 24
+    // Answer recieved
+    case constants.type.WEB_RTC.ANSWER:
+      webRTCHandler.handleAnswer(data);
+      break;
+    // Steps 24
+    // Ice Candidates recieved
+    case constants.type.WEB_RTC.ICE_CANDIDATES:
+      webRTCHandler.handleIceCandidates(data);
+      break;
     default:
       console.log("Unknown data type: ", data);
       break;

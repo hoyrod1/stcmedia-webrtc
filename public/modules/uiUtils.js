@@ -66,6 +66,8 @@ export const DOM = {
     offerorCreateOfferButton,
     offerorSetLocalDescriptionButton,
     offerorSendOfferButton,
+    offerorIceButton,
+    offerorSetRemoteDescriptionButton,
   },
   offeree: {
     offereeCreatePcButton,
