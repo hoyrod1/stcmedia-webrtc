@@ -126,8 +126,8 @@ function createPeerConnectionObject() {
   // Then register event listeners
   // #1 Listen for webRTC connection state change event(Goal is the "connected" state change)
   pc.addEventListener("connectionstatechange", (e) => {
-    // console.log(e);
     console.log("Connection state changed to: ", pc.connectionState);
+
     if (pc.connectionState === "connected") {
       alert("A webRTC connection has been established between you and the other peer");
       uiUtils.logToCustomConsole(
@@ -136,7 +136,10 @@ function createPeerConnectionObject() {
         true,
         constants.myColors.green
       );
-      // Later update UI to remove all learning buttons and allow users to insert text
+      // The logic below will run after the "connectionState" is "connected"
+      // Update the UI to allow users to send messages (via the DataChannel)
+      // And remove the learning buttons
+      uiUtils.updateUiOnSuccessfullConnection();
     }
   });
   //-----------------------------------------------------------------------------------------//

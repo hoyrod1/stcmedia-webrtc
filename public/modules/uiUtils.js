@@ -227,3 +227,20 @@ export function showOffereeButtons() {
   offereeButtonsContainer.classList.add("show");
 }
 //====================================================================================//
+
+//========================= updateUiOnSuccessfullConnection ==========================//
+// Message related UI
+export function updateUiOnSuccessfullConnection() {
+  // Showing the message input element
+  messageInputContainer.classList.remove("hidden");
+  messageInputContainer.classList.add("show");
+  // Remove text inside
+  // messageInputContainer.innerHTML = "";
+  // Remove the learning buttons for the Offerer
+  offerorButtonsContainer.classList.remove("show");
+  offerorButtonsContainer.classList.add("hidden");
+  // Remove the learning buttons for the Offeree
+  offereeButtonsContainer.classList.remove("show");
+  offereeButtonsContainer.classList.add("hidden");
+}
+//====================================================================================//
