@@ -14,6 +14,7 @@ let pc;
 let dataChannel;
 // Array of ice candidates
 const iceCandidatesGenerated = [];
+const iceCandidatesReceivedBuffer = [];
 //================================== END OF GLOBAL VARIABLES ==================================//
 
 //==================================== webRTCConfiguration ====================================//
@@ -194,6 +195,10 @@ function createDataChannel(isOfferor) {
     // The receiver needs to register a ondatachannel listener
     // This will only fire once a valid webrtc connection has been established
     pc.ondatachannel = (e) => {
+      console.log(
+        "The ondataChannel event was emitted fr PEER2, here is the event object: ",
+        e
+      );
       dataChannel = e.channel;
       registerDataChannelEventListener();
       uiUtils.logToCustomConsole(
@@ -208,15 +213,18 @@ function createDataChannel(isOfferor) {
 //============================== registerDataChannelEventListener =============================//
 function registerDataChannelEventListener() {
   dataChannel.addEventListener("message", (e) => {
-    console.log("Message has been recieved from a data channel");
+    console.log("Message has been recieved from a data channel", e);
     // Later, we can implement logoc to add the message to the users frontend
   });
   dataChannel.addEventListener("close", (e) => {
-    console.log("Data channel has been closed");
+    // This will fire for the remaining user that has data channel open
+    console.log("Data channel has been closed", e);
   });
   dataChannel.addEventListener("open", (e) => {
+    // This will fire when the WebRtc connection is established
     console.log(
-      "Data channel has been opened, you are ready to send and receive messages over your data channel"
+      "Data channel has been opened, you are ready to send and receive messages over your data channel",
+      e
     );
   });
 }
@@ -329,9 +337,9 @@ export function handleOffer(data) {
 
 //========================================= handleAnswer ========================================//
 export function handleAnswer(data) {
-  // console.log(data);
-  uiUtils.logToCustomConsole("Änswer received, send your ice candadtes");
-  uiUtils.DOM.offeror.offerorIceButton.classList.remove("hidden");
+  console.log(data.answer);
+  uiUtils.logToCustomConsole("Änswer received, send your ice candidates to PEER2");
+  uiUtils.DOM.offeror.offerorIceButton.classList.remove("hide");
   uiUtils.DOM.offeror.offerorIceButton.classList.add("show-ice");
   uiUtils.DOM.offeror.offerorIceButton.addEventListener("click", (e) => {
     // console.log(e);
@@ -341,13 +349,55 @@ export function handleAnswer(data) {
       "Finally set your remote description"
     );
     // Show the setRemoteDescription button
-    uiUtils.DOM.offeror.offerorSetRemoteDescriptionButton.classList.remove("hidden");
+    uiUtils.DOM.offeror.offerorSetRemoteDescriptionButton.classList.remove("hide");
   });
+  // After showing the setRemoteDescription button it is time to set the "Remote Description"
+  uiUtils.DOM.offeror.offerorSetRemoteDescriptionButton.addEventListener(
+    "click",
+    async (e) => {
+      // console.log(e);
+      await pc.setRemoteDescription(data.answer);
+      // Log to the custom console
+      uiUtils.logToCustomConsole("Remote description has been updated with the answer");
+      // Finally ass the ice candidates inside the buffer (if any)
+      // Once ice candidates have been set you can add ice candidates
+      console.log(iceCandidatesReceivedBuffer);
+      for (const candidates of iceCandidatesReceivedBuffer) {
+        console.log(candidates);
+        await pc.addIceCandidate(candidates);
+        // Log to the custom console
+        uiUtils.logToCustomConsole("Added ice candidates to the peer connection");
+      }
+      // Reset iceCandidatesReceivedBuffer to null
+      iceCandidatesReceivedBuffer.splice(0, iceCandidatesReceivedBuffer.length);
+    }
+  );
 }
 //===================================== END OF handleAnswer =====================================//
 
 //===================================== handleIceCandidates =====================================//
-// export function handleIceCandidates(data) {
-//   console.log(data);
-// }
+export function handleIceCandidates(data) {
+  // console.log(data);
+  if (pc.remoteDescription) {
+    try {
+      console.log(data);
+      data.candidatesArray.forEach((candidate) => {
+        pc.addIceCandidate(candidate);
+      });
+      // Log to the custom console
+      uiUtils.logToCustomConsole("Ädded the ice candidate to your pc object");
+    } catch (error) {
+      console.log("There was an error trying to the pc object: ", error);
+    }
+  } else {
+    // Create a temporary Buffor
+    data.candidatesArray.forEach((candidates) => {
+      iceCandidatesReceivedBuffer.push(candidates);
+    });
+    // Log to the custom console
+    uiUtils.logToCustomConsole(
+      "Ädded the ice candidate from the other peer to the temporary buffer array"
+    );
+  }
+}
 //================================== END OF handleIceCandidates =================================//
