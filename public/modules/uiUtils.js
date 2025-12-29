@@ -1,5 +1,6 @@
 console.log("==================== Insanity Check For uiUtils.js ====================");
 import * as state from "./state.js";
+import * as constants from "./constants.js";
 //============================= selecting DOM elements =============================//
 const user_session_id_element = document.getElementById("session_id_display");
 const infoModalContainer = document.getElementById("info_modal_content_container");
@@ -60,6 +61,8 @@ export const DOM = {
   destroyRoomButton,
   joinRoomButton,
   exitButton,
+  sendMessageButton,
+  messageInputField,
   offeror: {
     offerorCreatePcButton,
     offerorAddDataTypeButton,
@@ -235,12 +238,35 @@ export function updateUiOnSuccessfullConnection() {
   messageInputContainer.classList.remove("hidden");
   messageInputContainer.classList.add("show");
   // Remove text inside
-  // messageInputContainer.innerHTML = "";
+  messagesContainer.innerHTML = "";
   // Remove the learning buttons for the Offerer
   offerorButtonsContainer.classList.remove("show");
   offerorButtonsContainer.classList.add("hidden");
   // Remove the learning buttons for the Offeree
   offereeButtonsContainer.classList.remove("show");
   offereeButtonsContainer.classList.add("hidden");
+  // Register a keypress event on our input message element
+  messageInputContainer.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendMessageButton.click();
+    }
+  });
+}
+//====================================================================================//
+
+//============================= addOutGoingMessagesToUi ==============================//
+export function addOutGoingMessagesToUi(message) {
+  // console.log(message);
+  const userTag = "YOU";
+  const formattedMessage = `${userTag}: ${message}`;
+  const messageElement = document.createElement("div");
+  messageElement.style.color = constants.myColors.sendMessageColor;
+  messageElement.textContent = formattedMessage;
+  // Add this message to the DOM
+  messagesContainer.appendChild(messageElement);
+  // Clear the input field
+  messageInputField.value = "";
+  // Ensure that UI scrolls to allow the user scroll and see all the messages
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 //====================================================================================//

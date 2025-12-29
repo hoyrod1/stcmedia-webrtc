@@ -3,6 +3,8 @@ export const myColors = {
   green: "#98ff80",
   orange: "#ffcb0f",
   blue: "#5dbcff",
+  sendMessageColor: "#b00066",
+  receiveMessageColor: "#096900",
 };
 export const type = {
   ROOM_CREATE: {

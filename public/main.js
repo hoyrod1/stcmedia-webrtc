@@ -71,3 +71,15 @@ function exitButton(e) {
   // Later, we will need to close the webRtc
 }
 //================================================================================//
+
+//=============================== sendMessageButton ==============================//
+uiUtils.DOM.sendMessageButton.addEventListener("click", (e) => {
+  // console.log(e);
+  const message = uiUtils.DOM.messageInputField.value.trim();
+  // console.log(message);
+  if (message) {
+    // Step 1: Add the message to the user's UI
+    uiUtils.addOutGoingMessagesToUi(message);
+  }
+});
+//================================================================================//
