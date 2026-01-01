@@ -404,3 +404,11 @@ export function handleIceCandidates(data) {
   }
 }
 //================================== END OF handleIceCandidates =================================//
+
+//================================= sendMessageUsingDataChannel =================================//
+// Data channel function to send message
+export function sendMessageUsingDataChannel(message) {
+  // console.log(message);
+  dataChannel.send(message);
+}
+//============================== END OF sendMessageUsingDataChannel =============================//

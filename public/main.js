@@ -4,6 +4,7 @@ import * as uiUtils from "./modules/uiUtils.js";
 import * as ws from "./modules/ws.js";
 import * as ajax from "./modules/ajax.js";
 import * as state from "./modules/state.js";
+import * as webRTCHandler from "./modules/webRTCHandler.js";
 //================================================================================//
 
 //================================= unique userId ================================//
@@ -80,6 +81,8 @@ uiUtils.DOM.sendMessageButton.addEventListener("click", (e) => {
   if (message) {
     // Step 1: Add the message to the user's UI
     uiUtils.addOutGoingMessagesToUi(message);
+    // Step 2: Sending the message to the other PEER
+    webRTCHandler.sendMessageUsingDataChannel(message);
   }
 });
 //================================================================================//
