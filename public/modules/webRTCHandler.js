@@ -217,11 +217,13 @@ function createDataChannel(isOfferor) {
 function registerDataChannelEventListener() {
   dataChannel.addEventListener("message", (e) => {
     console.log("Message has been recieved from a data channel", e);
-    // Later, we can implement logoc to add the message to the users frontend
+    // 1st we need to extract the message from the data channel
+    const msg = e.data;
+    uiUtils.addInComingMessagesToUi(msg);
   });
   dataChannel.addEventListener("close", (e) => {
-    // This will fire for the remaining user that has data channel open
-    console.log("Data channel has been closed", e);
+    // This will fire for all the user that has data channel open
+    console.log("The 'close' event was fired on your Data channel object: ", e);
   });
   dataChannel.addEventListener("open", (e) => {
     // This will fire when the WebRtc connection is established
@@ -412,3 +414,23 @@ export function sendMessageUsingDataChannel(message) {
   dataChannel.send(message);
 }
 //============================== END OF sendMessageUsingDataChannel =============================//
+
+//===================================== closePeerConnection =====================================//
+// Handle closure for the Data channel
+export function closePeerConnection() {
+  // Step 1: Close a data channel if it exist
+  // if (dataChannel) {
+  //   dataChannel.close();
+  //   dataChannel = null;
+  //   console.log("The Data Channel is closed");
+  // }
+  // Step 2: Close Peer Connection if it exist
+  if (pc) {
+    pc.close();
+    pc = null;
+    dataChannel = null;
+    console.log("You have closed the Peer Connection by calling the 'close' method");
+  }
+  console.log("Your Peer Connection object has been closed after exiting the room", pc);
+}
+//================================= END OF closePeerConnection ==================================//

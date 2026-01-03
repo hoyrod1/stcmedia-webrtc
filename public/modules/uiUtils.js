@@ -270,3 +270,20 @@ export function addOutGoingMessagesToUi(message) {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 //====================================================================================//
+
+//============================= addInComingMessagesToUi ==============================//
+export function addInComingMessagesToUi(message) {
+  // console.log(message);
+  const otherUserId = state.getState().otherUserId;
+  const formattedMessage = `id: ${otherUserId}: ${message}`;
+  const messageElement = document.createElement("div");
+  messageElement.style.color = constants.myColors.receiveMessageColor;
+  messageElement.textContent = formattedMessage;
+  // Add this message to the DOM
+  messagesContainer.appendChild(messageElement);
+  // Clear the input field
+  messageInputField.value = "";
+  // Ensure that UI scrolls to allow the user scroll and see all the messages
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+//====================================================================================//

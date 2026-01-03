@@ -69,7 +69,8 @@ function exitButton(e) {
   uiUtils.exitRoom();
   ws.exitRoom(roomName, userId);
   uiUtils.logToCustomConsole(`${roomName}, has left the room.`);
-  // Later, we will need to close the webRtc
+  // Close the PEER connection and the webRtc Data Channel (If they exist)
+  webRTCHandler.closePeerConnection();
 }
 //================================================================================//
 
